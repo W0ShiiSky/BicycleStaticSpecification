@@ -1,11 +1,11 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html>
 
 <head>
-    <title>Roboflow Demo</title>
+    <title>Roboflow Demo</title> -->
 
     <!-- <meta name="viewport" content="width=640, user-scalable=no" /> -->
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"
         integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg=="
@@ -21,12 +21,31 @@
 
     <link rel="stylesheet" href="./main.css">
     <script src="./main.js"></script>
-</head>
+</head> -->
 
-<body class="loading">
+<!-- <body class="loading">
     <video id="video" autoplay muted playsinline></video>
     <div id="fps"></div>
     <div id="dashboard"></div>
-</body>
+</body> -->
 
+<!-- </html> -->
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Object Detection</title>
+    <link rel="stylesheet" href="main.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+    <script src="https://cdn.roboflow.com/roboflow.js"></script>
+</head>
+<body class="loading">
+    <video autoplay playsinline style="display:none;"></video>
+    <div id="dashboard"></div>
+    <div id="fps"></div>
+    <button id="capture">Capture Photo</button>
+    <script src="main.js"></script>
+</body>
 </html>
