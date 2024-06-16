@@ -684,7 +684,23 @@ $(function () {
         updateDashboard(predictions);
     };
 
-    // Function to capture or uncapture the photo
+    // Function to capture the photo
+    const capturePhoto = function () {
+        const dimensions = videoDimensions(video);
+
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+        model
+            .detect(canvas)
+            .then(function (predictions) {
+                renderPredictions(predictions);
+            })
+            .catch(function (e) {
+                console.log("Error detecting objects:", e);
+            });
+    };
+
+    // Function to toggle capture state
     const toggleCapture = function () {
         if (!isCapturing) {
             capturePhoto();
