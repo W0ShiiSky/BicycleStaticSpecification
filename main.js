@@ -703,10 +703,12 @@ $(function () {
     // Function to toggle capture state
     const toggleCapture = function () {
         if (!isCapturing) {
-            capturePhoto();
+            capturePhoto(); // Capture the photo and draw detections
             $("#captureButton").text("Uncapture");
         } else {
-            // Handle 'uncapture' action if needed
+            // Clear canvas and update dashboard to remove elements
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            $("#dashboard").empty(); // Remove any displayed elements in dashboard
             $("#captureButton").text("Capture Photo");
         }
         isCapturing = !isCapturing; // Toggle capture state
