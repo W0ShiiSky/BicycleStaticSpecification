@@ -703,9 +703,13 @@ $(function () {
     // Event listener for capture button
     $("#captureButton").click(function () {
         capturePhoto();
+    
         // Stop the video stream
         if (stream) {
             stream.getTracks().forEach(track => track.stop());
         }
+    
+        // Clear the canvas
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
     });
 });
