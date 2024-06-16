@@ -469,7 +469,6 @@
 //     });
 // });
 
-
 $(function () {
     const video = $("video")[0];
     let stream; // Variable to hold the stream object
@@ -477,6 +476,7 @@ $(function () {
     const canvas = $("<canvas/>")[0]; // Create canvas element
     const ctx = canvas.getContext("2d"); // Get 2D context
     const font = "16px sans-serif";
+    let isCapturing = false; // Variable to track capture state
 
     const startVideoStreamPromise = navigator.mediaDevices
         .getUserMedia({
@@ -684,28 +684,21 @@ $(function () {
         updateDashboard(predictions);
     };
 
-    // Function to capture the photo
-    const capturePhoto = function () {
-        const dimensions = videoDimensions(video);
-
-        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-        model
-            .detect(canvas)
-            .then(function (predictions) {
-                renderPredictions(predictions);
-            })
-            .catch(function (e) {
-                console.log("Error detecting objects:", e);
-            });
+    // Function to capture or uncapture the photo
+    const toggleCapture = function () {
+        if (!isCapturing) {
+            capturePhoto();
+            $("#captureButton").text("Uncapture");
+        } else {
+            // Handle 'uncapture' action if needed
+            $("#captureButton").text("Capture Photo");
+        }
+        isCapturing = !isCapturing; // Toggle capture state
     };
 
     // Event listener for capture button
     $("#captureButton").click(function () {
-        capturePhoto();
-        // Stop the video stream
-        if (stream) {
-            stream.getTracks().forEach(track => track.stop());
-        }
+        toggleCapture();
+        // Optionally, you can add logic here to handle what happens after capturing or uncapturing the photo
     });
 });
