@@ -635,7 +635,7 @@ $(function () {
 
                 element = $("<img>").attr({
                     id: elementId,
-                    src: "https://W0ShiiSky.github.io/BicycleSpecification/image/BicycleSpecification3.jpg",
+                    src: "https://W0ShiiSky.github.io/BicycleStaticSpecification/image/BicycleSpecification3.jpg",
                     alt: "Bicycle Image"
                 });
 
@@ -653,7 +653,7 @@ $(function () {
 
                 element = $("<img>").attr({
                     id: elementId,
-                    src: "https://W0ShiiSky.github.io/BicycleSpecification/image/BicycleSpecification.jpg",
+                    src: "https://W0ShiiSky.github.io/BicycleStaticSpecification/image/BicycleSpecification.jpg",
                     alt: "Handlebars Image"
                 });
 
