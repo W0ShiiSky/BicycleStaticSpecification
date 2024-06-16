@@ -791,17 +791,15 @@ $(function () {
         version: 1
     };
 
-    const loadModelPromise = new Promise(function (resolve, reject) {
-        roboflow
-            .auth({
-                publishable_key: publishable_key
-            })
-            .load(toLoad)
-            .then(function (m) {
-                model = m;
-                resolve();
-            });
-    });
+    const loadModelPromise = roboflow
+        .auth({
+            publishable_key: publishable_key
+        })
+        .load(toLoad)
+        .then(function (m) {
+            model = m;
+            console.log("Model loaded:", model);
+        });
 
     Promise.all([startVideoStreamPromise, loadModelPromise]).then(function () {
         $("body").removeClass("loading");
@@ -994,12 +992,16 @@ $(function () {
         img.src = dataUrl;
         img.onload = function () {
             console.log("Image loaded for detection");
-            model.detect(img).then(function (predictions) {
-                console.log("Predictions received:", predictions);
-                renderPredictions(predictions);
-            }).catch(function (e) {
-                console.log("Error during detection:", e);
-            });
+            if (model) {
+                model.detect(img).then(function (predictions) {
+                    console.log("Predictions received:", predictions);
+                    renderPredictions(predictions);
+                }).catch(function (e) {
+                    console.log("Error during detection:", e);
+                });
+            } else {
+                console.log("Model is not defined");
+            }
         };
     });
 });
