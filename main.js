@@ -979,6 +979,8 @@ $(function () {
     var pastFrameTimes = [];
     
     $("#capture").click(function () {
+        console.log("Capture button clicked");
+
         const canvas = document.createElement('canvas');
         canvas.width = video.videoWidth;
         canvas.height = video.videoHeight;
@@ -986,13 +988,17 @@ $(function () {
         context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
         const dataUrl = canvas.toDataURL('image/jpeg');
+        console.log("Image captured:", dataUrl);
+
         const img = new Image();
         img.src = dataUrl;
         img.onload = function () {
+            console.log("Image loaded for detection");
             model.detect(img).then(function (predictions) {
+                console.log("Predictions received:", predictions);
                 renderPredictions(predictions);
             }).catch(function (e) {
-                console.log("CAUGHT", e);
+                console.log("Error during detection:", e);
             });
         };
     });
