@@ -232,7 +232,6 @@
 //     });
 // });
 
-
 $(function () {
     const video = $("video")[0];
     let stream; // Variable to hold the stream object
@@ -307,6 +306,24 @@ $(function () {
         });
 
         $("body").append(canvas);
+    };
+
+    const videoDimensions = function (video) {
+        const videoRatio = video.videoWidth / video.videoHeight;
+        let width = video.offsetWidth,
+            height = video.offsetHeight;
+        const elementRatio = width / height;
+
+        if (elementRatio > videoRatio) {
+            width = height * videoRatio;
+        } else {
+            height = width / videoRatio;
+        }
+
+        return {
+            width: width,
+            height: height
+        };
     };
 
     const updateDashboard = function (predictionsData) {
@@ -448,7 +465,6 @@ $(function () {
     // Event listener for capture button
     $("#captureButton").click(function () {
         capturePhoto();
-        // Optionally, you can add logic here to handle what happens after capturing
-        // For example, you may want to show a confirmation message, etc.
+        // Optionally, you can add logic here to handle what happens after capturing the photo
     });
 });
