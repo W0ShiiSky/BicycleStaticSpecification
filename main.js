@@ -701,17 +701,8 @@ $(function () {
     };
 
     // Event listener for capture button
-    // Event listener for capture button
     $("#captureButton").click(function () {
-        // Toggle capture state or perform capture/uncapture action
-        if ($(this).text() === "Capture Photo") {
-            capturePhoto();
-            $(this).text("Uncapture");
-        } else {
-            // Handle 'uncapture' action if needed
-            $(this).text("Capture Photo");
-        }
-
+        capturePhoto();
         // Stop the video stream
         if (stream) {
             stream.getTracks().forEach(track => track.stop());
