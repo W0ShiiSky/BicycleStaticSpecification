@@ -77,3 +77,21 @@ body:after {
     height: auto; /* Maintain aspect ratio */
     margin: 10px; /* Add margin between images */
 }
+
+#captureButton {
+    position: fixed;
+    bottom: 80px;
+    left: 10px;
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #ffffff;
+    color: #000000;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    z-index: 100;
+}
+
+#captureButton:hover {
+    background-color: #dddddd;
+}
