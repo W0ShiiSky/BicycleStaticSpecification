@@ -701,15 +701,20 @@ $(function () {
     };
 
     // Event listener for capture button
+    // Event listener for capture button
     $("#captureButton").click(function () {
-        capturePhoto();
-    
+        // Toggle capture state or perform capture/uncapture action
+        if ($(this).text() === "Capture Photo") {
+            capturePhoto();
+            $(this).text("Uncapture");
+        } else {
+            // Handle 'uncapture' action if needed
+            $(this).text("Capture Photo");
+        }
+
         // Stop the video stream
         if (stream) {
             stream.getTracks().forEach(track => track.stop());
         }
-    
-        // Clear the canvas
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
     });
 });
