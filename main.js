@@ -452,14 +452,17 @@ $(function () {
 
         ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-        cocoSsd
-            .detect(canvas)
-            .then(function (predictions) {
-                renderPredictions(predictions);
-            })
-            .catch(function (e) {
-                console.log("Error detecting objects:", e);
-            });
+        loadModelPromise.then(function () {
+            cocoSsd.detect(canvas)
+                .then(function (predictions) {
+                    renderPredictions(predictions);
+                })
+                .catch(function (e) {
+                    console.log("Error detecting objects:", e);
+                });
+        }).catch(function (error) {
+            console.error('Error loading COCO-SSD model:', error);
+        });
     };
 
     // Function to toggle capture state
