@@ -306,7 +306,7 @@ $(function () {
     const loadModelPromise = async () => {
         try {
             // Path to your YOLOv5 model weights (best.pt)
-            const weightsPath = 'C:/Users/ewanh/java2/BICYCLESTATICSPECIFICATION/weights/best.pt'; // Adjust this path as per your directory structure
+            const weightsPath = 'C:/Users/ewanh/java2/BicycleStaticSpecification/weights/best.pt'; // Adjust this path as per your directory structure
 
             // Load the YOLOv5 model
             model = await window.ObjectDetection.create({
