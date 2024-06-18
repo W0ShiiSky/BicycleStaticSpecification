@@ -366,7 +366,7 @@ $(function () {
 
                 element = $("<img>").attr({
                     id: elementId,
-                    src: "images/bicycle.jpg", // Local path to bicycle image
+                    src: "https://W0ShiiSky.github.io/BicycleStaticSpecification/image/BicycleSpecification3.jpg", // Local path to bicycle image
                     alt: "Bicycle Image"
                 });
 
