@@ -290,7 +290,7 @@ $(function () {
     const loadModel = async () => {
         try {
             // Path to your YOLOv5 model weights (best.pt)
-            const weightsPath = 'C:/Users/ewanh/java2/BicycleStaticSpecification/weights/best.pt'; // Adjust this path as per your directory structure
+            const weightsPath = 'C:/Users/ewanh/java2/Training_Object/yolov5/runs/train/yolov5s_results/weights/best.pt'; // Adjust this path as per your directory structure
 
             // Load the YOLOv5 model
             model = await window.ObjectDetection.create({
@@ -317,9 +317,12 @@ $(function () {
 
     // Function to capture photo and perform object detection
     const capturePhoto = async () => {
-        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-        const predictions = await model.detect(canvas);
-        renderPredictions(predictions);
+        try {
+            const predictions = await model.detect(canvas); // Ensure model is initialized before using detect
+            renderPredictions(predictions);
+        } catch (error) {
+            console.error('Error detecting objects:', error);
+        }
     };
 
     // Function to render predictions on canvas and update dashboard
