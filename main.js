@@ -261,6 +261,11 @@ $(function () {
     let isCapturing = false;
     let model;
 
+    if (!video || !canvas || !ctx) {
+        console.error('Video, canvas, or context not found.');
+        return;
+    }
+
     // Function to start video stream
     const startVideoStream = async () => {
         try {
