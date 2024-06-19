@@ -251,6 +251,7 @@
 // });
 
 
+// Wait for document to be fully loaded before running the script
 $(function () {
     const video = $("video")[0];
     const canvas = $("canvas")[0];
