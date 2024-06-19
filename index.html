@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html>
 <head>
     <title>Roboflow Demo</title>
@@ -25,5 +25,23 @@
     <div id="fps"></div>
     <div id="dashboard"></div>
     <button id="captureButton">Capture Photo</button>
+</body>
+</html> -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YOLOv5 Object Detection</title>
+</head>
+<body>
+    <video autoplay playsinline></video>
+    <canvas></canvas>
+    <div id="dashboard"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd"></script>
+    <script src="./main.js"></script>
 </body>
 </html>
