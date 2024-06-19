@@ -280,7 +280,8 @@ $(function () {
             console.error("Error accessing the camera:", err);
         });
 
-    const loadModelPromise = ort.InferenceSession.create('C:/Users/ewanh/java2/Training_Object/yolov5/runs/train/yolov5s_results/weights/best.onnx')
+    const loadModelPromise = ort.InferenceSession.create('C:/Users/ewanh/java2/BicycleStaticSpecification/runs/train/yolov5s_results/weights/best.onnx')
+    
         .then(function (s) {
             session = s;
         })
