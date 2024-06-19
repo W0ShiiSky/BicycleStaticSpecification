@@ -34,6 +34,33 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>YOLOv5 Object Detection</title>
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+        video {
+            max-width: 100%;
+            height: auto;
+        }
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        #dashboard {
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.7);
+            padding: 10px;
+        }
+    </style>
 </head>
 <body>
     <video autoplay playsinline></video>
