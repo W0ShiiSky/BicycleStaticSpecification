@@ -451,12 +451,43 @@ $(function () {
     });
 
     function preprocessInput(canvas) {
-        // Implement preprocessing to convert canvas data to input tensor for the model
-        // Return the tensor input
+        const ctx = canvas.getContext('2d');
+        const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const input = new Float32Array(canvas.width * canvas.height * 3);
+    
+        for (let i = 0; i < imgData.data.length / 4; i++) {
+            input[i * 3] = imgData.data[i * 4] / 255.0;
+            input[i * 3 + 1] = imgData.data[i * 4 + 1] / 255.0;
+            input[i * 3 + 2] = imgData.data[i * 4 + 2] / 255.0;
+        }
+    
+        return new ort.Tensor('float32', input, [1, 3, canvas.height, canvas.width]);
     }
-
+    
     function postprocessOutput(output) {
-        // Implement postprocessing to convert model output to predictions
-        // Return the predictions
+        // Convert the output tensor to an array of predictions
+        // This will vary depending on your model's output format
+        const boxes = output.boxes.data;
+        const scores = output.scores.data;
+        const classes = output.classes.data;
+        const predictions = [];
+    
+        for (let i = 0; i < scores.length; i++) {
+            if (scores[i] > 0.5) {
+                predictions.push({
+                    class: classes[i],
+                    confidence: scores[i],
+                    bbox: {
+                        x: boxes[i * 4],
+                        y: boxes[i * 4 + 1],
+                        width: boxes[i * 4 + 2] - boxes[i * 4],
+                        height: boxes[i * 4 + 3] - boxes[i * 4 + 1]
+                    },
+                    color: 'red' // or use a class-specific color
+                });
+            }
+        }
+        return predictions;
     }
+    
 });
