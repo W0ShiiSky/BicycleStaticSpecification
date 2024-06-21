@@ -253,7 +253,7 @@
 $(function () {
     const video = $("video")[0];
     let stream; // Variable to hold the stream object
-    let pytorchModel; // Variable to hold the PyTorch model
+    let model;
     const canvas = $("<canvas/>")[0]; // Create canvas element
     const ctx = canvas.getContext("2d"); // Get 2D context
     const font = "16px sans-serif";
@@ -280,19 +280,17 @@ $(function () {
             console.error("Error accessing the camera:", err);
         });
 
-    // Function to load PyTorch model
-    const loadPyTorchModel = async function () {
-        const modelPath = 'runs/train/yolov5s_results/weights/best.pt'; // Update with your PyTorch model path
-
-        try {
-            pytorchModel = await torch.load(modelPath); // Load the PyTorch model
-            console.log("PyTorch model loaded successfully:", pytorchModel);
-        } catch (error) {
-            console.error("Error loading or running PyTorch model:", error);
-        }
-    };
-
-    const loadModelPromise = loadPyTorchModel(); // Load the PyTorch model
+    const loadModelPromise = new Promise(function (resolve, reject) {
+        const modelPath = 'runs/train/yolov5s_results/weights/best.onnx'; // Replace with your model path
+    
+        onnx.loadModel(modelPath).then(function (m) {
+            model = m;
+            resolve();
+        }).catch(function (err) {
+            console.error('Error loading model:', err);
+            reject(err);
+        });
+    });
 
     Promise.all([startVideoStreamPromise, loadModelPromise]).then(function () {
         $("body").removeClass("loading");
@@ -343,159 +341,93 @@ $(function () {
             $("#dashboard").html("");
             return;
         }
-
+    
         $("#dashboard").empty();
-
-        let bicycleImageCreated = false;
-        let handlebarsImageCreated = false;
-
-        const videoRect = video.getBoundingClientRect();
-
+    
+        // Example: Create images based on predictions
         predictionsData.forEach(function (prediction, index) {
             const classLabel = prediction.class;
-            const confidence = prediction.confidence ? prediction.confidence.toFixed(2) : "N/A";
-
-            const elementId = `prediction_${index}`;
-            let element;
-
-            if (prediction.class === "Bicycle" && !bicycleImageCreated) {
-                bicycleImageCreated = true;
-
-                element = $("<img>").attr({
-                    id: elementId,
-                    src: "https://W0ShiiSky.github.io/BicycleStaticSpecification/image/BicycleSpecification3.jpg",
-                    alt: "Bicycle Image"
-                });
-
-                element.css({
-                    position: "absolute",
-                    top: videoRect.top + (prediction.bbox.y - prediction.bbox.height / 2) + "px",
-                    left: videoRect.left + (prediction.bbox.x - prediction.bbox.width / 2) + "px",
-                    zIndex: 100,
-                    width: "150px",
-                    height: "auto"
-                });
-
-            } else if (prediction.class === "Handlebars" && !handlebarsImageCreated) {
-                handlebarsImageCreated = true;
-
-                element = $("<img>").attr({
-                    id: elementId,
-                    src: "https://W0ShiiSky.github.io/BicycleStaticSpecification/image/BicycleSpecification.jpg",
-                    alt: "Handlebars Image"
-                });
-
-                element.css({
-                    position: "absolute",
-                    top: videoRect.top + (prediction.bbox.y - prediction.bbox.height / 2) + "px",
-                    left: videoRect.left + (prediction.bbox.x - prediction.bbox.width / 2) + "px",
-                    zIndex: 100,
-                    width: "150px",
-                    height: "auto"
-                });
-            }
-
-            if (element) {
-                $("#dashboard").append(element);
-            }
+    
+            // Example: Create image element based on classLabel
+            const element = $("<img>").attr({
+                src: prediction.imageUrl, // Replace with appropriate URL
+                alt: `${classLabel} Image`
+            });
+    
+            element.css({
+                position: "absolute",
+                top: prediction.bbox.y + "px",
+                left: prediction.bbox.x + "px",
+                zIndex: 100,
+                width: "150px",
+                height: "auto"
+            });
+    
+            $("#dashboard").append(element);
         });
-
+    
         console.log("Dashboard updated with predictions:", predictionsData);
     };
+    
 
     const renderPredictions = function (predictions) {
         const dimensions = videoDimensions(video);
-        console.log("Received predictions:", predictions);
-
-        const scale = 1;
-
+    
         ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-
+    
         predictions.forEach(function (prediction) {
             const x = prediction.bbox.x;
             const y = prediction.bbox.y;
-
             const width = prediction.bbox.width;
             const height = prediction.bbox.height;
-
-            ctx.strokeStyle = prediction.color; 
-            ctx.lineWidth = 4;
-            ctx.strokeRect(
-                (x - width / 2) / scale,
-                (y - height / 2) / scale,
-                width / scale,
-                height / scale
-            );
-
+    
+            // Draw bounding box
+            ctx.strokeStyle = prediction.color;
+            ctx.lineWidth = 2;
+            ctx.strokeRect(x, y, width, height);
+    
+            // Draw label
             ctx.fillStyle = prediction.color;
-            const textWidth = ctx.measureText(prediction.class).width;
-            const textHeight = parseInt(font, 10);
-            ctx.fillRect(
-                (x - width / 2) / scale,
-                (y - height / 2) / scale,
-                textWidth + 8,
-                textHeight + 4
-            );
-        });
-
-        predictions.forEach(function (prediction) {
-            const x = prediction.bbox.x;
-            const y = prediction.bbox.y;
-
-            const width = prediction.bbox.width;
-            const height = prediction.bbox.height;
-
             ctx.font = font;
-            ctx.textBaseline = "top";
-            ctx.fillStyle = "#000000";
-            ctx.fillText(
-                prediction.class,
-                (x - width / 2) / scale + 4,
-                (y - height / 2) / scale + 1
-            );
+            ctx.fillText(prediction.class, x, y > 10 ? y - 5 : 10);
         });
+    
         updateDashboard(predictions);
     };
+    
 
     // Function to capture the photo
-    const capturePhoto = async function () {
+    const capturePhoto = function () {
         const dimensions = videoDimensions(video);
 
         ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-        // Prepare input tensor from canvas image
-        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-        const inputTensor = torch.tensor(new Float32Array(imageData.data), {dtype: torch.float32}).reshape([1, 3, canvas.height, canvas.width]);
-
-        try {
-            // Make predictions using the PyTorch model
-            const predictions = pytorchModel.forward(inputTensor);
-            console.log("Output tensor:", predictions);
-            renderPredictions(predictions); // Render predictions on the canvas
-        } catch (e) {
-            console.error("Error detecting objects:", e);
-        }
+        model
+            .detect(canvas)
+            .then(function (predictions) {
+                renderPredictions(predictions);
+            })
+            .catch(function (e) {
+                console.log("Error detecting objects:", e);
+            });
     };
 
     // Function to toggle capture state
     const toggleCapture = function () {
         if (!isCapturing) {
-            capturePhoto(); // Capture the photo and draw detections
+            capturePhoto();
             $("#captureButton").text("Uncapture");
         } else {
-            // Clear canvas and update dashboard to remove elements
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            $("#dashboard").empty(); // Remove any displayed elements in dashboard
+            $("#dashboard").empty();
             $("#captureButton").text("Capture Photo");
         }
-        isCapturing = !isCapturing; // Toggle capture state
+        isCapturing = !isCapturing;
     };
-
-    // Event listener for capture button
+    
     $("#captureButton").click(function () {
         toggleCapture();
-        // Optionally, you can add logic here to handle what happens after capturing or uncapturing the photo
     });
+    
 });
-
 
