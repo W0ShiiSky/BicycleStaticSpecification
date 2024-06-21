@@ -250,14 +250,10 @@
 //     });
 // });
 
-
-// const modelPath = 'C:/Users/ewanh/java2/BicycleStaticSpecification/runs/train/yolov5s_results/weights/best.onnx'; // Update with your ONNX model path
-
-
 $(function () {
     const video = $("video")[0];
     let stream; // Variable to hold the stream object
-    let session;
+    let pytorchModel; // Variable to hold the PyTorch model
     const canvas = $("<canvas/>")[0]; // Create canvas element
     const ctx = canvas.getContext("2d"); // Get 2D context
     const font = "16px sans-serif";
@@ -284,17 +280,19 @@ $(function () {
             console.error("Error accessing the camera:", err);
         });
 
-    const loadModelPromise = new Promise(function (resolve, reject) {
-        const modelPath = 'runs/train/yolov5s_results/weights/best.onnx'; // Update with your ONNX model path
+    // Function to load PyTorch model
+    const loadPyTorchModel = async function () {
+        const modelPath = 'runs/train/yolov5s_results/weights/best.pt'; // Update with your PyTorch model path
 
-        ort.InferenceSession.create(modelPath).then(function (loadedSession) {
-            session = loadedSession;
-            resolve();
-        }).catch(function (err) {
-            console.error("Error loading model:", err);
-            reject(err);
-        });
-    });
+        try {
+            pytorchModel = await torch.load(modelPath); // Load the PyTorch model
+            console.log("PyTorch model loaded successfully:", pytorchModel);
+        } catch (error) {
+            console.error("Error loading or running PyTorch model:", error);
+        }
+    };
+
+    const loadModelPromise = loadPyTorchModel(); // Load the PyTorch model
 
     Promise.all([startVideoStreamPromise, loadModelPromise]).then(function () {
         $("body").removeClass("loading");
@@ -459,78 +457,27 @@ $(function () {
         updateDashboard(predictions);
     };
 
+    // Function to capture the photo
     const capturePhoto = async function () {
         const dimensions = videoDimensions(video);
-        console.log("Video dimensions:", dimensions);
-    
+
         ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-        console.log("Canvas drawn with dimensions:", canvas.width, canvas.height);
-    
+
+        // Prepare input tensor from canvas image
         const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-        console.log("Captured image data:", imageData);
-    
-        const expectedWidth = 640;
-        const expectedHeight = 480;
-        const expectedChannels = 4; // RGBA format
-    
-        if (canvas.width !== expectedWidth || canvas.height !== expectedHeight) {
-            console.error(`Error: Canvas dimensions (${canvas.width}x${canvas.height}) do not match expected dimensions (${expectedWidth}x${expectedHeight}).`);
-            return;
-        }
-    
-        const expectedSize = expectedWidth * expectedHeight * expectedChannels;
-        if (imageData.data.length !== expectedSize) {
-            console.error(`Error: Image data size (${imageData.data.length}) does not match expected size (${expectedSize}).`);
-            return;
-        }
-    
-        // Create input tensor with correct dimensions and channels
-        const inputTensor = new ort.Tensor('float32', new Float32Array(imageData.data), [1, expectedHeight, expectedWidth, expectedChannels]);
-    
+        const inputTensor = torch.tensor(new Float32Array(imageData.data), {dtype: torch.float32}).reshape([1, 3, canvas.height, canvas.width]);
+
         try {
-            const feeds = { 'images': inputTensor }; // Provide input tensor with correct name
-            console.log("Feeds:", feeds);
-    
-            const outputData = await session.run(feeds);
-            console.log("Output data:", outputData);
-    
-            const predictions = formatPredictions(outputData);
-            console.log("Formatted predictions:", predictions);
-    
-            renderPredictions(predictions);
-        } catch (err) {
-            console.error("Error running the model:", err);
+            // Make predictions using the PyTorch model
+            const predictions = pytorchModel.forward(inputTensor);
+            console.log("Output tensor:", predictions);
+            renderPredictions(predictions); // Render predictions on the canvas
+        } catch (e) {
+            console.error("Error detecting objects:", e);
         }
     };
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
 
-    const formatPredictions = function (outputData) {
-        // Convert the model's output to the format expected by renderPredictions
-        // This will depend on your model's output structure
-        return outputData.predictions.map(prediction => ({
-            class: prediction.className,
-            bbox: {
-                x: prediction.bbox[0],
-                y: prediction.bbox[1],
-                width: prediction.bbox[2],
-                height: prediction.bbox[3]
-            },
-            color: 'rgba(255,0,0,0.5)' // Example color, change as needed
-        }));
-    };
-
+    // Function to toggle capture state
     const toggleCapture = function () {
         if (!isCapturing) {
             capturePhoto(); // Capture the photo and draw detections
@@ -544,7 +491,11 @@ $(function () {
         isCapturing = !isCapturing; // Toggle capture state
     };
 
+    // Event listener for capture button
     $("#captureButton").click(function () {
         toggleCapture();
+        // Optionally, you can add logic here to handle what happens after capturing or uncapturing the photo
     });
 });
+
+
