@@ -468,7 +468,7 @@ $(function () {
         console.log('Image Data Size:', imageData.data.length); // Verify data size
     
         // Create input tensor with correct dimensions
-        const inputTensor = new ort.Tensor('float32', new Float32Array(imageData.data), [1, canvas.height, canvas.width, 3]);
+        const inputTensor = new ort.Tensor('float32', new Float32Array(imageData.data), [1, canvas.height, canvas.width, 4]);
     
         try {
             const outputData = await session.run({ 'input': inputTensor });
