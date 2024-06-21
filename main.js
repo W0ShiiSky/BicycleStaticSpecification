@@ -462,10 +462,18 @@ $(function () {
     const capturePhoto = async function () {
         const dimensions = videoDimensions(video);
         ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-
+    
+        // Get image data from canvas
         const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    
+        // Debugging: Log dimensions of the captured image data
+        console.log('Image Data Dimensions:', imageData.width, imageData.height);
+    
+        // Ensure the size of imageData.data matches the expected input size of the model
+        // You may need to resize or reshape imageData.data to match the model's input shape
+    
         const inputTensor = new ort.Tensor('float32', new Float32Array(imageData.data), [1, canvas.height, canvas.width, 3]);
-
+    
         try {
             const outputData = await session.run({ 'input': inputTensor });
             const predictions = formatPredictions(outputData);
@@ -474,6 +482,7 @@ $(function () {
             console.error("Error running the model:", err);
         }
     };
+    
 
     const formatPredictions = function (outputData) {
         // Convert the model's output to the format expected by renderPredictions
