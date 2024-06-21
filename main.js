@@ -254,7 +254,7 @@
 $(function () {
     const video = $("video")[0];
     let stream; // Variable to hold the stream object
-    let model;
+    let session;
     const canvas = $("<canvas/>")[0]; // Create canvas element
     const ctx = canvas.getContext("2d"); // Get 2D context
     const font = "16px sans-serif";
@@ -284,8 +284,8 @@ $(function () {
     const loadModelPromise = new Promise(function (resolve, reject) {
         const modelPath = 'C:/Users/ewanh/java2/BicycleStaticSpecification/runs/train/yolov5s_results/weights/best.onnx'; // Update with your ONNX model path
 
-        onnx.loadModel(modelPath).then(function (loadedModel) {
-            model = loadedModel;
+        ort.InferenceSession.create(modelPath).then(function (loadedSession) {
+            session = loadedSession;
             resolve();
         }).catch(function (err) {
             console.error("Error loading model:", err);
@@ -460,29 +460,31 @@ $(function () {
         const dimensions = videoDimensions(video);
         ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-        const inputTensor = new onnx.Tensor(new Float32Array(canvas.width * canvas.height * 3), 'float32', [1, canvas.height, canvas.width, 3]);
-        const outputMap = await model.run([inputTensor]);
-        const predictions = outputMap.values().next().value;
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const inputTensor = new ort.Tensor('float32', new Float32Array(imageData.data), [1, canvas.height, canvas.width, 3]);
 
-        // Convert predictions to the format you need
-        const formattedPredictions = formatPredictions(predictions);
-        renderPredictions(formattedPredictions);
+        try {
+            const outputData = await session.run({ 'input': inputTensor });
+            const predictions = formatPredictions(outputData);
+            renderPredictions(predictions);
+        } catch (err) {
+            console.error("Error running the model:", err);
+        }
     };
 
-    const formatPredictions = function (predictions) {
-        // This function should convert your model's raw output into the format expected by renderPredictions
-        return predictions.map(prediction => {
-            return {
-                class: prediction.className,
-                bbox: {
-                    x: prediction.x,
-                    y: prediction.y,
-                    width: prediction.width,
-                    height: prediction.height
-                },
-                color: 'rgba(255,0,0,0.5)' // Example color, change as needed
-            };
-        });
+    const formatPredictions = function (outputData) {
+        // Convert the model's output to the format expected by renderPredictions
+        // This will depend on your model's output structure
+        return outputData.predictions.map(prediction => ({
+            class: prediction.className,
+            bbox: {
+                x: prediction.bbox[0],
+                y: prediction.bbox[1],
+                width: prediction.bbox[2],
+                height: prediction.bbox[3]
+            },
+            color: 'rgba(255,0,0,0.5)' // Example color, change as needed
+        }));
     };
 
     const toggleCapture = function () {
