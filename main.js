@@ -484,18 +484,25 @@ $(function () {
             return;
         }
     
-        // Ensure correct ordering and size of input tensor
+        // Create input tensor with correct dimensions and channels
         const inputTensor = new ort.Tensor('float32', new Float32Array(imageData.data), [1, expectedHeight, expectedWidth, expectedChannels]);
     
         try {
             const feeds = { 'images': inputTensor }; // Provide input tensor with correct name
+            console.log("Feeds:", feeds);
+    
             const outputData = await session.run(feeds);
+            console.log("Output data:", outputData);
+    
             const predictions = formatPredictions(outputData);
+            console.log("Formatted predictions:", predictions);
+    
             renderPredictions(predictions);
         } catch (err) {
             console.error("Error running the model:", err);
         }
     };
+    
     
     
     
