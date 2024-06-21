@@ -283,7 +283,8 @@ $(function () {
     const loadModelPromise = new Promise(function (resolve, reject) {
         const modelPath = 'C:/Users/ewanh/java2/BicycleStaticSpecification/runs/train/yolov5s_results/weights/best.onnx'; // Replace with your model path
     
-        onnx.loadModel(modelPath).then(function (m) {
+        const session = new onnx.InferenceSession();
+        session.loadModel(modelPath).then(function (m) {
             model = m;
             resolve();
         }).catch(function (err) {
