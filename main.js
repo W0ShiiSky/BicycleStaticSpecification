@@ -342,8 +342,9 @@ $(function () {
             return;
         }
     
+        // Clear previous elements
         $("#dashboard").empty();
-    
+
         // Example: Create images based on predictions
         predictionsData.forEach(function (prediction, index) {
             const classLabel = prediction.class;
@@ -368,7 +369,6 @@ $(function () {
     
         console.log("Dashboard updated with predictions:", predictionsData);
     };
-    
 
     const renderPredictions = function (predictions) {
         const dimensions = videoDimensions(video);
@@ -376,10 +376,10 @@ $(function () {
         ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
     
         predictions.forEach(function (prediction) {
-            const x = prediction.bbox.x;
-            const y = prediction.bbox.y;
-            const width = prediction.bbox.width;
-            const height = prediction.bbox.height;
+            const x = prediction.bbox.x * dimensions.width / video.videoWidth;
+            const y = prediction.bbox.y * dimensions.height / video.videoHeight;
+            const width = prediction.bbox.width * dimensions.width / video.videoWidth;
+            const height = prediction.bbox.height * dimensions.height / video.videoHeight;
     
             // Draw bounding box
             ctx.strokeStyle = prediction.color;
@@ -428,6 +428,4 @@ $(function () {
     $("#captureButton").click(function () {
         toggleCapture();
     });
-    
 });
-
