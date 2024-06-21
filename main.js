@@ -285,7 +285,7 @@ $(function () {
         });
 
     const loadModelPromise = new Promise(function (resolve, reject) {
-        const modelPath = 'C:/Users/ewanh/java2/BicycleStaticSpecification/runs/train/yolov5s_results/weights/best.onnx'; // Update with your ONNX model path
+        const modelPath = 'runs/train/yolov5s_results/weights/best.onnx'; // Update with your ONNX model path
 
         ort.InferenceSession.create(modelPath).then(function (loadedSession) {
             session = loadedSession;
