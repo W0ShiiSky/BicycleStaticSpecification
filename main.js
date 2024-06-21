@@ -461,16 +461,21 @@ $(function () {
 
     const capturePhoto = async function () {
         const dimensions = videoDimensions(video);
+        console.log("Video dimensions:", dimensions);
+    
         ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        console.log("Canvas drawn with dimensions:", canvas.width, canvas.height);
     
         const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-    
-        // Assuming your model expects RGBA format with specific dimensions
-        const expectedWidth = 640;
-        const expectedHeight = 480;
-        const expectedChannels = 4; // RGBA
+        console.log("Captured image data:", imageData);
     
         // Check if dimensions match expected
+        const expectedWidth = 640;
+        const expectedHeight = 480;
+        const expectedChannels = 4; // Assuming RGBA format
+    
+        console.log("Expected dimensions:", expectedWidth, expectedHeight, "Expected channels:", expectedChannels);
+    
         if (canvas.width !== expectedWidth || canvas.height !== expectedHeight) {
             console.error(`Error: Canvas dimensions (${canvas.width}x${canvas.height}) do not match expected dimensions (${expectedWidth}x${expectedHeight}).`);
             return;
@@ -483,18 +488,29 @@ $(function () {
             return;
         }
     
+        console.log("Image data size:", imageData.data.length);
+    
         // Create input tensor with correct dimensions and channels
         const inputTensor = new ort.Tensor('float32', new Float32Array(imageData.data), [1, expectedHeight, expectedWidth, expectedChannels]);
+        console.log("Input tensor created:", inputTensor);
     
         try {
             const feeds = { 'images': inputTensor }; // Provide input tensor with correct name
+            console.log("Feeds:", feeds);
+            
             const outputData = await session.run(feeds);
+            console.log("Output data:", outputData);
+    
             const predictions = formatPredictions(outputData);
+            console.log("Formatted predictions:", predictions);
+    
             renderPredictions(predictions);
         } catch (err) {
             console.error("Error running the model:", err);
         }
     };
+    
+    
     
     
     
