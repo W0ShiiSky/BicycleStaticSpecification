@@ -466,7 +466,7 @@ $(function () {
         const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
     
         // Assuming canvas.width and canvas.height are 640 and 480 respectively
-        const inputTensor = new ort.Tensor('float32', new Float32Array(imageData.data), [1, canvas.height, canvas.width, 4]); // Adjusted to match your model's requirements
+        const inputTensor = new ort.Tensor('float32', new Float32Array(imageData.data), [1, 480, 640, 3]); // Adjusted to match your model's requirements
     
         try {
             const feeds = { 'images': inputTensor }; // Provide input tensor with the correct name
@@ -477,6 +477,7 @@ $(function () {
             console.error("Error running the model:", err);
         }
     };
+    
     
     
     
