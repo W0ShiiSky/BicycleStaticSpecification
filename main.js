@@ -465,17 +465,29 @@ $(function () {
     
         const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
     
-        // Ensure the expected dimensions and channels match your model's requirements
-        const expectedSize = canvas.width * canvas.height * 4; // Assuming RGBA format
+        // Assuming your model expects RGBA format with specific dimensions
+        const expectedWidth = 640;
+        const expectedHeight = 480;
+        const expectedChannels = 4; // RGBA
+    
+        // Check if dimensions match expected
+        if (canvas.width !== expectedWidth || canvas.height !== expectedHeight) {
+            console.error(`Error: Canvas dimensions (${canvas.width}x${canvas.height}) do not match expected dimensions (${expectedWidth}x${expectedHeight}).`);
+            return;
+        }
+    
+        // Check if imageData data length matches expected size
+        const expectedSize = expectedWidth * expectedHeight * expectedChannels;
         if (imageData.data.length !== expectedSize) {
             console.error(`Error: Image data size (${imageData.data.length}) does not match expected size (${expectedSize}).`);
             return;
         }
     
-        const inputTensor = new ort.Tensor('float32', new Float32Array(imageData.data), [1, canvas.height, canvas.width, 4]); // Adjust channels (4 for RGBA)
+        // Create input tensor with correct dimensions and channels
+        const inputTensor = new ort.Tensor('float32', new Float32Array(imageData.data), [1, expectedHeight, expectedWidth, expectedChannels]);
     
         try {
-            const feeds = { 'images': inputTensor }; // Provide input tensor with the correct name
+            const feeds = { 'images': inputTensor }; // Provide input tensor with correct name
             const outputData = await session.run(feeds);
             const predictions = formatPredictions(outputData);
             renderPredictions(predictions);
@@ -483,6 +495,7 @@ $(function () {
             console.error("Error running the model:", err);
         }
     };
+    
     
     
     
