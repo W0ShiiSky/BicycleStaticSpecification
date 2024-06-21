@@ -469,46 +469,34 @@ $(function () {
         const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
         console.log("Captured image data:", imageData);
     
-        // Check if dimensions match expected
         const expectedWidth = 640;
         const expectedHeight = 480;
-        const expectedChannels = 4; // Assuming RGBA format
-    
-        console.log("Expected dimensions:", expectedWidth, expectedHeight, "Expected channels:", expectedChannels);
+        const expectedChannels = 4; // RGBA format
     
         if (canvas.width !== expectedWidth || canvas.height !== expectedHeight) {
             console.error(`Error: Canvas dimensions (${canvas.width}x${canvas.height}) do not match expected dimensions (${expectedWidth}x${expectedHeight}).`);
             return;
         }
     
-        // Check if imageData data length matches expected size
         const expectedSize = expectedWidth * expectedHeight * expectedChannels;
         if (imageData.data.length !== expectedSize) {
             console.error(`Error: Image data size (${imageData.data.length}) does not match expected size (${expectedSize}).`);
             return;
         }
     
-        console.log("Image data size:", imageData.data.length);
-    
-        // Create input tensor with correct dimensions and channels
+        // Ensure correct ordering and size of input tensor
         const inputTensor = new ort.Tensor('float32', new Float32Array(imageData.data), [1, expectedHeight, expectedWidth, expectedChannels]);
-        console.log("Input tensor created:", inputTensor);
     
         try {
             const feeds = { 'images': inputTensor }; // Provide input tensor with correct name
-            console.log("Feeds:", feeds);
-            
             const outputData = await session.run(feeds);
-            console.log("Output data:", outputData);
-    
             const predictions = formatPredictions(outputData);
-            console.log("Formatted predictions:", predictions);
-    
             renderPredictions(predictions);
         } catch (err) {
             console.error("Error running the model:", err);
         }
     };
+    
     
     
     
