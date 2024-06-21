@@ -465,19 +465,19 @@ $(function () {
     
         const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
     
-        console.log('Image Data Size:', imageData.data.length); // Verify data size
-    
-        // Create input tensor with correct dimensions
-        const inputTensor = new ort.Tensor('float32', new Float32Array(imageData.data), [1, canvas.height, canvas.width, 4]);
+        // Assuming canvas.width and canvas.height are 640 and 480 respectively
+        const inputTensor = new ort.Tensor('float32', new Float32Array(imageData.data), [1, canvas.height, canvas.width, 4]); // Adjusted to match your model's requirements
     
         try {
-            const outputData = await session.run({ 'input': inputTensor });
+            const feeds = { 'images': inputTensor }; // Provide input tensor with the correct name
+            const outputData = await session.run(feeds);
             const predictions = formatPredictions(outputData);
             renderPredictions(predictions);
         } catch (err) {
             console.error("Error running the model:", err);
         }
     };
+    
     
     
 
