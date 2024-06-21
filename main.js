@@ -251,6 +251,9 @@
 // });
 
 
+// const modelPath = 'C:/Users/ewanh/java2/BicycleStaticSpecification/runs/train/yolov5s_results/weights/best.onnx'; // Update with your ONNX model path
+
+
 $(function () {
     const video = $("video")[0];
     let stream; // Variable to hold the stream object
