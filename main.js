@@ -122,31 +122,37 @@ $(function () {
                     zIndex: 100,
                     cursor: "pointer",
                     backgroundColor: "rgba(255, 255, 255, 0.7)",
-                    padding: "4px",
-                    border: "1px solid #ccc"
+                    padding: "4px"
                 });
     
-            // Event listener for clicking on the prediction box
-            element.click(function () {
-                if (classLabel === "Bicycle" && !$("#bicycleImage").length) {
-                    const bicycleImage = $("<img>")
-                        .attr({
-                            id: "bicycleImage",
-                            src: "https://W0ShiiSky.github.io/BicycleStaticSpecification/image/BicycleSpecification3.jpg",
-                            alt: "Bicycle Image"
-                        })
-                        .css({
-                            position: "absolute",
-                            top: videoRect.top + (prediction.bbox.y - prediction.bbox.height / 2) + "px",
-                            left: videoRect.left + (prediction.bbox.x - prediction.bbox.width / 2) + "px",
-                            zIndex: 100,
-                            width: "150px",
-                            height: "auto"
+            // Check if the classLabel is "Bicycle" to create the image on click
+            if (classLabel === "Bicycle") {
+                element.click(function () {
+                    if (!$("#bicycleImage").length) {
+                        const bicycleImage = $("<img>")
+                            .attr({
+                                id: "bicycleImage",
+                                src: "https://W0ShiiSky.github.io/BicycleStaticSpecification/image/BicycleSpecification3.jpg",
+                                alt: "Bicycle Image"
+                            })
+                            .css({
+                                position: "absolute",
+                                top: videoRect.top + (prediction.bbox.y - prediction.bbox.height / 2) + "px",
+                                left: videoRect.left + (prediction.bbox.x - prediction.bbox.width / 2) + "px",
+                                zIndex: 100,
+                                width: "150px",
+                                height: "auto"
+                            });
+    
+                        bicycleImage.click(function () {
+                            // Add any actions to perform when clicking on the bicycle image
+                            console.log("Clicked on bicycle image.");
                         });
     
-                    $("#dashboard").append(bicycleImage);
-                }
-            });
+                        $("#dashboard").append(bicycleImage);
+                    }
+                });
+            }
     
             $("#dashboard").append(element);
         });
