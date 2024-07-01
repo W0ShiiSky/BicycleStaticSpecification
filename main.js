@@ -109,39 +109,53 @@ $(function () {
             const confidence = prediction.confidence ? prediction.confidence.toFixed(2) : "N/A";
     
             const elementId = `prediction_${index}`;
-            let element;
+            let element = $("<span>")
+                .attr({
+                    id: elementId,
+                    class: "prediction",
+                    "data-class": prediction.class
+                })
+                .text(`Class: ${classLabel}, Confidence: ${confidence}`);
     
+            element.css({
+                position: "absolute",
+                top: videoRect.top + (prediction.bbox.y - prediction.bbox.height / 2) + "px",
+                left: videoRect.left + (prediction.bbox.x - prediction.bbox.width / 2) + "px",
+                zIndex: 100,
+                cursor: "pointer",
+                backgroundColor: "rgba(255, 255, 255, 0.7)",
+                padding: "4px",
+                border: "1px solid #ccc"
+            });
     
-                // Event listener for clicking on the "Bicycle" label
-                element.click(function () {
-                    if (!$("#bicycleImage").length) {
-                        const bicycleImage = $("<img>")
-                            .attr({
-                                id: "bicycleImage",
-                                src: "https://W0ShiiSky.github.io/BicycleStaticSpecification/image/BicycleSpecification3.jpg",
-                                alt: "Bicycle Image"
-                            })
-                            .css({
-                                position: "absolute",
-                                top: videoRect.top + (prediction.bbox.y - prediction.bbox.height / 2) + "px",
-                                left: videoRect.left + (prediction.bbox.x - prediction.bbox.width / 2) + "px",
-                                zIndex: 100,
-                                width: "150px",
-                                height: "auto"
-                            });
+            // Event listener for clicking on the "Bicycle" label
+            element.click(function () {
+                if (classLabel === "Bicycle" && !$("#bicycleImage").length) {
+                    const bicycleImage = $("<img>")
+                        .attr({
+                            id: "bicycleImage",
+                            src: "https://W0ShiiSky.github.io/BicycleStaticSpecification/image/BicycleSpecification3.jpg",
+                            alt: "Bicycle Image"
+                        })
+                        .css({
+                            position: "absolute",
+                            top: videoRect.top + (prediction.bbox.y - prediction.bbox.height / 2) + "px",
+                            left: videoRect.left + (prediction.bbox.x - prediction.bbox.width / 2) + "px",
+                            zIndex: 100,
+                            width: "150px",
+                            height: "auto"
+                        });
     
-                        $("#dashboard").append(bicycleImage);
-                    }
-                });
-            
+                    $("#dashboard").append(bicycleImage);
+                }
+            });
     
-            if (element) {
-                $("#dashboard").append(element);
-            }
+            $("#dashboard").append(element);
         });
     
         console.log("Dashboard updated with predictions:", predictionsData);
     };
+    
     
 
     const renderPredictions = function (predictions) {
