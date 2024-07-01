@@ -352,19 +352,19 @@ $(function () {
             $("#dashboard").html("");
             return;
         }
-
+    
         $("#dashboard").empty();
-
+    
         const videoRect = video.getBoundingClientRect();
-
+    
         predictionsData.forEach(function (prediction, index) {
             const classLabel = prediction.class;
             const elementId = `prediction_${index}`;
-
+    
             let imageUrl;
             if (classLabel === "Bicycle") {
                 imageUrl = "https://W0ShiiSky.github.io/BicycleStaticSpecification/image/BicycleSpecification3.jpg";
-
+    
                 const element = $("<div>").attr({
                     id: elementId,
                     class: "prediction-box bicycle-box",
@@ -374,7 +374,7 @@ $(function () {
                     "data-width": prediction.bbox.width,
                     "data-height": prediction.bbox.height
                 });
-
+    
                 element.css({
                     position: "absolute",
                     top: videoRect.top + (prediction.bbox.y - prediction.bbox.height / 2) + "px",
@@ -385,8 +385,35 @@ $(function () {
                     cursor: "pointer",
                     zIndex: 100
                 });
-
+    
                 $("#dashboard").append(element);
+    
+                // Add click event handler for bicycle boxes
+                element.click(function () {
+                    if (!isCapturing) {
+                        const imageUrl = $(this).data("image-url");
+                        const x = $(this).data("x");
+                        const y = $(this).data("y");
+                        const width = $(this).data("width");
+                        const height = $(this).data("height");
+    
+                        const imgElement = $("<img>").attr({
+                            src: imageUrl,
+                            alt: "Bicycle Image"
+                        });
+    
+                        imgElement.css({
+                            position: "absolute",
+                            top: videoRect.top + (y - height / 2) + "px",
+                            left: videoRect.left + (x - width / 2) + "px",
+                            zIndex: 100,
+                            width: "150px",
+                            height: "auto"
+                        });
+    
+                        $("body").append(imgElement);
+                    }
+                });
             } else {
                 const element = $("<div>").attr({
                     id: elementId,
@@ -396,7 +423,7 @@ $(function () {
                     "data-width": prediction.bbox.width,
                     "data-height": prediction.bbox.height
                 });
-
+    
                 element.css({
                     position: "absolute",
                     top: videoRect.top + (prediction.bbox.y - prediction.bbox.height / 2) + "px",
@@ -407,13 +434,14 @@ $(function () {
                     cursor: "pointer",
                     zIndex: 100
                 });
-
+    
                 $("#dashboard").append(element);
             }
         });
-
+    
         console.log("Dashboard updated with predictions:", predictionsData);
     };
+    
 
     const renderPredictions = function (predictions) {
         const dimensions = videoDimensions(video);
