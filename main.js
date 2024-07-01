@@ -346,54 +346,74 @@ $(function () {
         };
     };
 
-    // const updateDashboard = function (predictionsData) {
-    //     if (predictionsData.length === 0) {
-    //         console.log("No predictions found.");
-    //         $("#dashboard").html("");
-    //         return;
-    //     }
+    const updateDashboard = function (predictionsData) {
+        if (predictionsData.length === 0) {
+            console.log("No predictions found.");
+            $("#dashboard").html("");
+            return;
+        }
 
-    //     $("#dashboard").empty();
+        $("#dashboard").empty();
 
-    //     const videoRect = video.getBoundingClientRect();
+        const videoRect = video.getBoundingClientRect();
 
-    //     predictionsData.forEach(function (prediction, index) {
-    //         const classLabel = prediction.class;
-    //         const elementId = `prediction_${index}`;
+        predictionsData.forEach(function (prediction, index) {
+            const classLabel = prediction.class;
+            const elementId = `prediction_${index}`;
 
-    //         let imageUrl;
-    //         if (classLabel === "Bicycle") {
-    //             imageUrl = "https://W0ShiiSky.github.io/BicycleStaticSpecification/image/BicycleSpecification3.jpg";
-    //         } else if (classLabel === "Handlebars") {
-    //             imageUrl = "https://W0ShiiSky.github.io/BicycleStaticSpecification/image/BicycleSpecification.jpg";
-    //         }
+            let imageUrl;
+            if (classLabel === "Bicycle") {
+                imageUrl = "https://W0ShiiSky.github.io/BicycleStaticSpecification/image/BicycleSpecification3.jpg";
 
-    //         const element = $("<div>").attr({
-    //             id: elementId,
-    //             class: "prediction-box",
-    //             "data-image-url": imageUrl,
-    //             "data-x": prediction.bbox.x,
-    //             "data-y": prediction.bbox.y,
-    //             "data-width": prediction.bbox.width,
-    //             "data-height": prediction.bbox.height
-    //         });
+                const element = $("<div>").attr({
+                    id: elementId,
+                    class: "prediction-box bicycle-box",
+                    "data-image-url": imageUrl,
+                    "data-x": prediction.bbox.x,
+                    "data-y": prediction.bbox.y,
+                    "data-width": prediction.bbox.width,
+                    "data-height": prediction.bbox.height
+                });
 
-    //         element.css({
-    //             position: "absolute",
-    //             top: videoRect.top + (prediction.bbox.y - prediction.bbox.height / 2) + "px",
-    //             left: videoRect.left + (prediction.bbox.x - prediction.bbox.width / 2) + "px",
-    //             width: prediction.bbox.width + "px",
-    //             height: prediction.bbox.height + "px",
-    //             border: "2px solid red",
-    //             cursor: "pointer",
-    //             zIndex: 100
-    //         });
+                element.css({
+                    position: "absolute",
+                    top: videoRect.top + (prediction.bbox.y - prediction.bbox.height / 2) + "px",
+                    left: videoRect.left + (prediction.bbox.x - prediction.bbox.width / 2) + "px",
+                    width: prediction.bbox.width + "px",
+                    height: prediction.bbox.height + "px",
+                    border: "2px solid red",
+                    cursor: "pointer",
+                    zIndex: 100
+                });
 
-    //         $("#dashboard").append(element);
-    //     });
+                $("#dashboard").append(element);
+            } else {
+                const element = $("<div>").attr({
+                    id: elementId,
+                    class: "prediction-box",
+                    "data-x": prediction.bbox.x,
+                    "data-y": prediction.bbox.y,
+                    "data-width": prediction.bbox.width,
+                    "data-height": prediction.bbox.height
+                });
 
-    //     console.log("Dashboard updated with predictions:", predictionsData);
-    // };
+                element.css({
+                    position: "absolute",
+                    top: videoRect.top + (prediction.bbox.y - prediction.bbox.height / 2) + "px",
+                    left: videoRect.left + (prediction.bbox.x - prediction.bbox.width / 2) + "px",
+                    width: prediction.bbox.width + "px",
+                    height: prediction.bbox.height + "px",
+                    border: "2px solid red",
+                    cursor: "pointer",
+                    zIndex: 100
+                });
+
+                $("#dashboard").append(element);
+            }
+        });
+
+        console.log("Dashboard updated with predictions:", predictionsData);
+    };
 
     const renderPredictions = function (predictions) {
         const dimensions = videoDimensions(video);
@@ -485,8 +505,10 @@ $(function () {
         // Optionally, you can add logic here to handle what happens after capturing or uncapturing the photo
     });
 
-    // Event listener for prediction boxes
-    $(document).on("click", ".prediction-box", function () {
+    // Event listener for bicycle prediction boxes
+    $(document).on("click", ".bicycle-box", function () {
+        if (isCapturing) return; // Exit if capturing is still active
+
         const imageUrl = $(this).data("image-url");
         const x = $(this).data("x");
         const y = $(this).data("y");
@@ -496,7 +518,7 @@ $(function () {
         const videoRect = video.getBoundingClientRect();
         const imgElement = $("<img>").attr({
             src: imageUrl,
-            alt: "Prediction Image"
+            alt: "Bicycle Image"
         });
 
         imgElement.css({
