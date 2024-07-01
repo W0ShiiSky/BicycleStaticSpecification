@@ -115,20 +115,18 @@ $(function () {
                     class: "prediction",
                     "data-class": prediction.class
                 })
-                .text(`Class: ${classLabel}, Confidence: ${confidence}`);
+                .css({
+                    position: "absolute",
+                    top: videoRect.top + (prediction.bbox.y - prediction.bbox.height / 2) + "px",
+                    left: videoRect.left + (prediction.bbox.x - prediction.bbox.width / 2) + "px",
+                    zIndex: 100,
+                    cursor: "pointer",
+                    backgroundColor: "rgba(255, 255, 255, 0.7)",
+                    padding: "4px",
+                    border: "1px solid #ccc"
+                });
     
-            element.css({
-                position: "absolute",
-                top: videoRect.top + (prediction.bbox.y - prediction.bbox.height / 2) + "px",
-                left: videoRect.left + (prediction.bbox.x - prediction.bbox.width / 2) + "px",
-                zIndex: 100,
-                cursor: "pointer",
-                backgroundColor: "rgba(255, 255, 255, 0.7)",
-                padding: "4px",
-                border: "1px solid #ccc"
-            });
-    
-            // Event listener for clicking on the "Bicycle" label
+            // Event listener for clicking on the prediction box
             element.click(function () {
                 if (classLabel === "Bicycle" && !$("#bicycleImage").length) {
                     const bicycleImage = $("<img>")
@@ -155,6 +153,7 @@ $(function () {
     
         console.log("Dashboard updated with predictions:", predictionsData);
     };
+    
     
     
 
