@@ -191,8 +191,9 @@ $(function () {
                     zIndex: 100,
                     cursor: "pointer",
                     backgroundColor: "rgba(255, 255, 255, 0.7)",
-                    padding: "6px",
-                    border: "none" // Remove the border
+                    padding: "4px",
+                    border: "none", // Remove the border
+                    height: "20px"
                 });
     
             // Check if the classLabel is "Bicycle" to create the image on click
