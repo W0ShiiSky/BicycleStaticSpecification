@@ -93,6 +93,75 @@ $(function () {
         };
     };
 
+    // const updateDashboard = function (predictionsData) {
+    //     if (predictionsData.length === 0) {
+    //         console.log("No predictions found.");
+    //         $("#dashboard").html("");
+    //         return;
+    //     }
+    
+    //     $("#dashboard").empty();
+    
+    //     const videoRect = video.getBoundingClientRect();
+    
+    //     predictionsData.forEach(function (prediction, index) {
+    //         const classLabel = prediction.class;
+    //         const confidence = prediction.confidence ? prediction.confidence.toFixed(2) : "N/A";
+    
+    //         const elementId = `prediction_${index}`;
+    //         let element = $("<span>")
+    //             .attr({
+    //                 id: elementId,
+    //                 class: "prediction",
+    //                 "data-class": prediction.class
+    //             })
+    //             .css({
+    //                 position: "absolute",
+    //                 top: videoRect.top + (prediction.bbox.y - prediction.bbox.height / 2) + "px",
+    //                 left: videoRect.left + (prediction.bbox.x - prediction.bbox.width / 2) + "px",
+    //                 zIndex: 100,
+    //                 cursor: "pointer",
+    //                 backgroundColor: "rgba(255, 255, 255, 0.7)",
+    //                 padding: "4px",
+    //                 border: "none" // Remove the border
+    //             });
+    
+    //         // Check if the classLabel is "Bicycle" to create the image on click
+    //         if (classLabel === "Bicycle") {
+    //             element.click(function () {
+    //                 const bicycleImage = $("#bicycleImage");
+    //                 if (bicycleImage.length) {
+    //                     bicycleImage.remove(); // Remove the image if it exists
+    //                 } else {
+    //                     const newBicycleImage = $("<img>")
+    //                         .attr({
+    //                             id: "bicycleImage",
+    //                             src: "https://W0ShiiSky.github.io/BicycleStaticSpecification/image/BicycleSpecification3.jpg",
+    //                             alt: "Bicycle Image"
+    //                         })
+    //                         .css({
+    //                             position: "absolute",
+    //                             top: videoRect.top + (prediction.bbox.y - prediction.bbox.height / 2) + "px",
+    //                             left: videoRect.left + (prediction.bbox.x - prediction.bbox.width / 2) + "px",
+    //                             zIndex: 100,
+    //                             width: "150px",
+    //                             height: "auto"
+    //                         });
+    
+    //                     newBicycleImage.click(function () {
+    //                         // Add any actions to perform when clicking on the bicycle image
+    //                         console.log("Clicked on bicycle image.");
+    //                     });
+    
+    //                     $("#dashboard").append(newBicycleImage);
+    //                 }
+    //             });
+    //         }
+    
+    //         $("#dashboard").append(element);
+    //     });
+    // };
+
     const updateDashboard = function (predictionsData) {
         if (predictionsData.length === 0) {
             console.log("No predictions found.");
@@ -129,10 +198,24 @@ $(function () {
             // Check if the classLabel is "Bicycle" to create the image on click
             if (classLabel === "Bicycle") {
                 element.click(function () {
-                    const bicycleImage = $("#bicycleImage");
-                    if (bicycleImage.length) {
-                        bicycleImage.remove(); // Remove the image if it exists
+                    const bicycleImageContainer = $("#bicycleImageContainer");
+                    if (bicycleImageContainer.length) {
+                        bicycleImageContainer.remove(); // Remove the image container if it exists
                     } else {
+                        const newBicycleImageContainer = $("<div>")
+                            .attr({
+                                id: "bicycleImageContainer"
+                            })
+                            .css({
+                                position: "absolute",
+                                top: videoRect.top + (prediction.bbox.y - prediction.bbox.height / 2) + 10 + "px", // Adjusted top position
+                                left: videoRect.left + (prediction.bbox.x - prediction.bbox.width / 2) + 10 + "px", // Adjusted left position
+                                zIndex: 100,
+                                width: "150px",
+                                height: "auto",
+                                cursor: "pointer"
+                            });
+    
                         const newBicycleImage = $("<img>")
                             .attr({
                                 id: "bicycleImage",
@@ -140,11 +223,7 @@ $(function () {
                                 alt: "Bicycle Image"
                             })
                             .css({
-                                position: "absolute",
-                                top: videoRect.top + (prediction.bbox.y - prediction.bbox.height / 2) + "px",
-                                left: videoRect.left + (prediction.bbox.x - prediction.bbox.width / 2) + "px",
-                                zIndex: 100,
-                                width: "150px",
+                                width: "100%",
                                 height: "auto"
                             });
     
@@ -153,7 +232,8 @@ $(function () {
                             console.log("Clicked on bicycle image.");
                         });
     
-                        $("#dashboard").append(newBicycleImage);
+                        newBicycleImageContainer.append(newBicycleImage);
+                        $("#dashboard").append(newBicycleImageContainer);
                     }
                 });
             }
@@ -161,6 +241,7 @@ $(function () {
             $("#dashboard").append(element);
         });
     };
+    
     
     
     
