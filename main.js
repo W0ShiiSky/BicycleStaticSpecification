@@ -186,14 +186,13 @@ $(function () {
                 })
                 .css({
                     position: "absolute",
-                    top: videoRect.top + (prediction.bbox.y - prediction.bbox.height / 2) + "px",
+                    // top: videoRect.top + (prediction.bbox.y - prediction.bbox.height / 2) + "px",
                     left: videoRect.left + (prediction.bbox.x - prediction.bbox.width / 2) + "px",
                     zIndex: 100,
                     cursor: "pointer",
                     backgroundColor: "rgba(255, 255, 255, 0.7)",
                     padding: "4px",
-                    border: "none", // Remove the border
-                    height: "20px"
+                    border: "none" // Remove the border
                 });
     
             // Check if the classLabel is "Bicycle" to create the image on click
