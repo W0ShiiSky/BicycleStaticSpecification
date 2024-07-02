@@ -186,7 +186,7 @@ $(function () {
                 })
                 .css({
                     position: "absolute",
-                    top: videoRect.top + (prediction.bbox.y - prediction.bbox.height / 2) + "200px",
+                    top: videoRect.top + (prediction.bbox.y - prediction.bbox.height / 2),
                     left: videoRect.left + (prediction.bbox.x - prediction.bbox.width / 2) + "px",
                     zIndex: 100,
                     cursor: "pointer",
