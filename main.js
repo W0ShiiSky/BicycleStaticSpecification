@@ -122,14 +122,18 @@ $(function () {
                     zIndex: 100,
                     cursor: "pointer",
                     backgroundColor: "rgba(255, 255, 255, 0.7)",
-                    padding: "4px"
+                    padding: "4px",
+                    border: "none" // Remove the border
                 });
     
             // Check if the classLabel is "Bicycle" to create the image on click
             if (classLabel === "Bicycle") {
                 element.click(function () {
-                    if (!$("#bicycleImage").length) {
-                        const bicycleImage = $("<img>")
+                    const bicycleImage = $("#bicycleImage");
+                    if (bicycleImage.length) {
+                        bicycleImage.remove(); // Remove the image if it exists
+                    } else {
+                        const newBicycleImage = $("<img>")
                             .attr({
                                 id: "bicycleImage",
                                 src: "https://W0ShiiSky.github.io/BicycleStaticSpecification/image/BicycleSpecification3.jpg",
@@ -144,21 +148,20 @@ $(function () {
                                 height: "auto"
                             });
     
-                        bicycleImage.click(function () {
+                        newBicycleImage.click(function () {
                             // Add any actions to perform when clicking on the bicycle image
                             console.log("Clicked on bicycle image.");
                         });
     
-                        $("#dashboard").append(bicycleImage);
+                        $("#dashboard").append(newBicycleImage);
                     }
                 });
             }
     
             $("#dashboard").append(element);
         });
-    
-        console.log("Dashboard updated with predictions:", predictionsData);
     };
+    
     
     
     
