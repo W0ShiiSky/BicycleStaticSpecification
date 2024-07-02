@@ -191,7 +191,7 @@ $(function () {
                     zIndex: 100,
                     cursor: "pointer",
                     backgroundColor: "rgba(255, 255, 255, 0.7)",
-                    padding: "2px",
+                    padding: "6px",
                     border: "none" // Remove the border
                 });
     
